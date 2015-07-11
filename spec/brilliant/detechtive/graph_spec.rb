@@ -37,6 +37,23 @@ module Brilliant
                                    )
 
         end
+
+
+        it 'handles mergeable case 2' do
+          input = [
+              ["shouting", "fight", "fleeing"],
+              ["fight", "gunshot", "panic", "fleeing"],
+              ["anger", "shouting"]
+          ]
+
+          res = @graph.input(input)
+          expect(res.state).to eq('Merge is possible')
+          expect(res.timelines).to eq(
+                                       [["anger", "shouting", "fight", "gunshot", "panic", "fleeing"]]
+                                   )
+
+        end
+
         it 'handles the partial merge case' do
           input = [
               ["shadowy figure", "demands",
