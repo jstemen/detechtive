@@ -36,11 +36,25 @@ module Brilliant
           forks = node.downstream.collect { |down|
             recursive_traverse(down, [])
           }
+          common_elems = forks.inject { |sum, nex| sum & nex }
+          raise "found #{common_elems.size} common elements" unless common_elems.size == 1
+          common_elem = common_elems.first
+          base_forks = forks.select { |f| f.first.equal? common_elem}
+          #binding.pry
+          if base_forks.empty?
+            #partial merge
+          elsif base_forks.size == 1
+            #full merge
+            puts "full merge possilbe"
 
-          visited << forks.sort_by(&:size).last
-          visited.flatten!
+            forks.sort_by(&:size).last.each { |node|
+              visited << node
+            }
+          else
+            raise " only one base fork should be found!"
+          end
+
 =begin
-          common = forks.inject{|sum,nex| sum & nex}
 
           base_fork = nil
           other_fork = nil
