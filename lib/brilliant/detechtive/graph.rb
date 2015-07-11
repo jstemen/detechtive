@@ -16,14 +16,21 @@ module Brilliant
       def process
         heads = @name_to_node_map.values.select { |n| n.upstream.empty? }
 
-        head = heads.first
+        timeline_states = heads.collect { |head|
+          recursive_traverse head, TimelineState.new
+        }
+        final_state = timeline_states.inject{|t,s|
+          t.timeline = t.timeline + s.timeline
+          t
+        }
+        final_state
 
-        recursive_traverse head, TimelineState.new
+
       end
 
       def recursive_traverse(node, current_state)
         puts "visiting #{node.name}"
-        current_state.timeline << node.name
+        current_state.timeline.first << node.name
         if node.downstream.empty?
 
           puts "#{node.name} has no downstream nodes"
@@ -33,16 +40,26 @@ module Brilliant
         else
 
           forks = node.downstream.collect { |down|
-            recursive_traverse(down, TimelineState.new).timeline
+            recursive_traverse(down, TimelineState.new).timeline.first
           }
           common_elems = forks.inject { |sum, nex| sum & nex }
           #binding.pry
 
           common_elem = common_elems.first
           base_forks = forks.select { |f| f.first.equal? common_elem }
-          if base_forks.empty?
+          if common_elem.nil?
+            current_state.state = "No merge is possible"
+
+            timelines = forks.collect { |f|
+              (current_state.timeline + f).flatten
+            }
+
+            current_state.timeline = timelines
+
+
+          elsif base_forks.empty?
             current_state.state = "Partial merge is possible"
-            #partial merge or no merge
+            #partial merge
             jumbled = []
 
             com_index = forks.first.find_index common_elem
@@ -55,7 +72,7 @@ module Brilliant
 
             versions = []
             #could iterate over permuations of parallel events here to list all possible timelines, but outside of problem description
-            dispute.each{ |p|
+            dispute.each { |p|
               versions << (current_state.timeline + p + agreed).flatten
             }
 
@@ -70,20 +87,6 @@ module Brilliant
           else
             raise " only one base fork should be found!"
           end
-
-=begin
-
-          base_fork = nil
-          other_fork = nil
-          forks.each{|fork|
-            if fork.find_index common == 0
-              base_fork = fork
-            else
-              other_fork = fork
-            end
-
-          }
-=end
 
         end
         current_state

@@ -5,7 +5,7 @@ module Brilliant
       attr_accessor :state, :timeline
 
       def initialize
-        @timeline = []
+        @timeline = [[] ]
       end
     end
   end

@@ -29,12 +29,12 @@ module Brilliant
           res = @graph.input(input)
           expect(res.state).to eq("Merge is possible")
           expect(res.timeline).to eq(
-                                    [
-                                        ["fight", "gunshot", "falling",
-                                         "fleeing"]
-                                    ]
+                                      [
+                                          ["fight", "gunshot", "falling",
+                                           "fleeing"]
+                                      ]
 
-                                )
+                                  )
 
         end
         it 'handles the partial merge case' do
@@ -48,14 +48,36 @@ module Brilliant
           res = @graph.input(input)
           expect(res.state).to eq("Partial merge is possible")
           expect(res.timeline).to eq(
-                                    [
-                                        ["shadowy figure", "demands",
-                                         "scream", "siren"],
-                                        ["shadowy figure", "pointed gun",
-                                         "scream", "siren"]
-                                    ]
+                                      [
+                                          ["shadowy figure", "demands",
+                                           "scream", "siren"],
+                                          ["shadowy figure", "pointed gun",
+                                           "scream", "siren"]
+                                      ]
 
-                                )
+                                  )
+
+        end
+
+        it 'handles the no merge possible case' do
+          input = [
+              ["argument", "coverup",
+               "pointing"],
+              ["press brief", "scandal",
+               "pointing"], ["argument", "bribe"]
+          ]
+
+          res = @graph.input(input)
+          expect(res.state).to eq("No merge is possible")
+          expect(res.timeline).to match_array(
+                                      [
+                                          ["argument", "coverup", "pointing"],
+                                          ["press brief", "scandal",
+                                           "pointing"],
+                                          ["argument", "bribe"]
+                                      ]
+
+                                  )
 
         end
       end
