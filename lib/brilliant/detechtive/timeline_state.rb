@@ -2,7 +2,10 @@ module Brilliant
   module Detechtive
     class TimelineState
 
-      attr_accessor :state, :timelines
+      # Holds message
+      attr_accessor :state
+      # An array of arrays.  Inter arrays represent possible order of events (a timeline)
+      attr_accessor :timelines
 
       def initialize
         @timelines = [[]]

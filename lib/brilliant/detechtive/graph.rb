@@ -19,7 +19,7 @@ module Brilliant
         timeline_states = heads.collect { |head|
           recursive_traverse head, TimelineState.new
         }
-        final_state = timeline_states.inject{|t,s|
+        final_state = timeline_states.inject { |t, s|
           t.timelines = t.timelines + s.timelines
           t
         }
@@ -29,63 +29,61 @@ module Brilliant
       end
 
       def recursive_traverse(node, current_state)
-        puts "visiting #{node.name}"
+        Log.debug "visiting #{node.name}"
         current_state.timelines.first << node.name
         if node.downstream.empty?
-
-          puts "#{node.name} has no downstream nodes"
+          Log.debug "#{node.name} has no downstream nodes. Reached end of timeline"
           return current_state
         elsif node.downstream.size == 1
+          Log.debug "#{node.name} only one downstream node.  Moving to it now."
           return recursive_traverse node.downstream.first, current_state
         else
+          Log.debug "#{node.name} has #{node.downstream.size} downstream nodes.  Investigating merge options."
 
-          forks = node.downstream.collect { |down|
-            recursive_traverse(down, TimelineState.new).timelines.first
+          timeline_forks = node.downstream.collect { |down|
+            downstream_fork_states = recursive_traverse(down, TimelineState.new).timelines
+            raise "Downstream partial merge detected.  This type of merge is not yet supported" unless downstream_fork_states.size == 1
+            downstream_fork_states.first
           }
-          common_elems = forks.inject { |sum, nex| sum & nex }
-          #binding.pry
+          common_elems = timeline_forks.inject { |sum, nex| sum & nex }
 
           common_elem = common_elems.first
-          base_forks = forks.select { |f| f.first.equal? common_elem }
+          base_forks = timeline_forks.select { |f| f.first.equal? common_elem }
           if common_elem.nil?
-            current_state.state = "No merge is possible"
+            current_state.state = 'No merge is possible'
 
-            timelines = forks.collect { |f|
+            timelines = timeline_forks.collect { |f|
               (current_state.timelines + f).flatten
             }
 
             current_state.timelines = timelines
 
-
           elsif base_forks.empty?
-            current_state.state = "Partial merge is possible"
-            #partial merge
-            jumbled = []
+            current_state.state = 'Partial merge is possible'
 
-            com_index = forks.first.find_index common_elem
-            agreed = forks.first.slice(com_index, forks.first.size - 1)
+            common_elem_index = timeline_forks.first.find_index common_elem
+            agreed_tail_arry = timeline_forks.first.slice(common_elem_index, timeline_forks.first.size - 1)
 
-            dispute = forks.collect { |f|
+            disputed_events_array = timeline_forks.collect { |f|
               term = f.find_index common_elem
               f.slice(0, term)
             }
 
-            versions = []
-            #could iterate over permuations of parallel events here to list all possible timelines, but outside of problem description
-            dispute.each { |p|
-              versions << (current_state.timelines + p + agreed).flatten
+            # could iterate over permuations of parallel events here to list all possible timelines, but outside of problem description
+            possible_timelines = disputed_events_array.collect  { |p|
+              possible_timelines << (current_state.timelines + p + agreed_tail_arry).flatten
             }
 
-            current_state.timelines = versions
-
+            current_state.timelines = possible_timelines
 
           elsif base_forks.size == 1
-            current_state.state = "Merge is possible"
-            puts "full merge possilbe"
+            current_state.state = 'Merge is possible'
+            Log.debug 'Full merge possilbe'
 
-            current_state.timelines = [(current_state.timelines + forks.sort_by(&:size).last).flatten]
+            longest_merge_array = timeline_forks.sort_by(&:size).last
+            current_state.timelines = [(current_state.timelines + longest_merge_array).flatten]
           else
-            raise " only one base fork should be found!"
+            raise 'Only one base fork should be found!'
           end
 
         end
