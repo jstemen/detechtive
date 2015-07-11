@@ -85,7 +85,7 @@ module Brilliant
       describe '#process_event_array' do
         it 'sets names to nodes map' do
           array = %w{shout run fight}
-          @graph.process_event_array array
+          @graph.send(:process_event_array, array)
           nodes_map = nil
           @graph.instance_eval do
             nodes_map = @name_to_node_map
@@ -98,7 +98,7 @@ module Brilliant
         end
         it 'is connected' do
           array = %w{shout run fight}
-          @graph.process_event_array array
+          @graph.send(:process_event_array, array)
           nodes_map = nil
           @graph.instance_eval do
             nodes_map = @name_to_node_map
@@ -114,8 +114,9 @@ module Brilliant
         end
         it 'doesn\'t create duplicate copies of nodes with the same name' do
           array = %w{shout run fight}
-          @graph.process_event_array array
-          @graph.process_event_array array
+          2.times {
+            @graph.send(:process_event_array, array)
+          }
           nodes_map = nil
           @graph.instance_eval do
             nodes_map = @name_to_node_map

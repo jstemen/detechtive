@@ -1,19 +1,20 @@
 module Brilliant
   module Detechtive
+    # Houses a set of doubly linked nodes representing a series of events
     class Graph
 
       def initialize
         @name_to_node_map = {}
       end
 
+
+      # @param [Array[Array[String]]] arry_of_arrays - Array of array of event names to process
+      # @return [TimelineState] - contains the merge result and a list of possible timelines
       def input(arry_of_arrays)
         arry_of_arrays.each { |a|
           process_event_array a
         }
-        process
-      end
 
-      def process
         heads = @name_to_node_map.values.select { |n| n.upstream.empty? }
 
         timeline_states = heads.collect { |head|
@@ -24,10 +25,14 @@ module Brilliant
           t
         }
         final_state
-
-
       end
 
+      private
+
+      # Finds the the most complete sequence of events possible
+      # @param [Node] node - The current node being processed in the graph
+      # @param [TimelineState] current_state - Holds the timeline state based off of processed nodes so far
+      # @return [TimelineState] - Holds the timeline state based off of processed nodes so far
       def recursive_traverse(node, current_state)
         Log.debug "visiting #{node.name}"
         current_state.timelines.first << node.name
@@ -70,8 +75,8 @@ module Brilliant
             }
 
             # could iterate over permuations of parallel events here to list all possible timelines, but outside of problem description
-            possible_timelines = disputed_events_array.collect  { |p|
-              possible_timelines << (current_state.timelines + p + agreed_tail_arry).flatten
+            possible_timelines = disputed_events_array.collect { |p|
+              (current_state.timelines + p + agreed_tail_arry).flatten
             }
 
             current_state.timelines = possible_timelines
@@ -91,10 +96,12 @@ module Brilliant
       end
 
 
-      def process_event_array(array)
+      # Loads events into graph in node form
+      # @param [Array[String]] event_array - Array of Strings of event names
+      def process_event_array(event_array)
         last = nil
-        array.each_with_index { |name, i|
-          last = @name_to_node_map[array[i-1]] if i > 0
+        event_array.each_with_index { |name, i|
+          last = @name_to_node_map[event_array[i-1]] if i > 0
           saved = @name_to_node_map[name] || Node.new(name)
           saved.add_upstream last
           @name_to_node_map[name]=saved

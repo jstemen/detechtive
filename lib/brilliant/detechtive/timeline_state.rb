@@ -1,5 +1,6 @@
 module Brilliant
   module Detechtive
+    # A structure for keeping track of sequence of events and merge status
     class TimelineState
 
       # Holds message
