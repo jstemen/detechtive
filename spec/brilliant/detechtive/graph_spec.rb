@@ -28,7 +28,7 @@ module Brilliant
 
           res = @graph.input(input)
           expect(res.state).to eq("Merge is possible")
-          expect(res.timeline).to eq(
+          expect(res.timelines).to eq(
                                       [
                                           ["fight", "gunshot", "falling",
                                            "fleeing"]
@@ -47,7 +47,7 @@ module Brilliant
 
           res = @graph.input(input)
           expect(res.state).to eq("Partial merge is possible")
-          expect(res.timeline).to eq(
+          expect(res.timelines).to eq(
                                       [
                                           ["shadowy figure", "demands",
                                            "scream", "siren"],
@@ -69,7 +69,7 @@ module Brilliant
 
           res = @graph.input(input)
           expect(res.state).to eq("No merge is possible")
-          expect(res.timeline).to match_array(
+          expect(res.timelines).to match_array(
                                       [
                                           ["argument", "coverup", "pointing"],
                                           ["press brief", "scandal",

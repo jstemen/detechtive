@@ -20,7 +20,7 @@ module Brilliant
           recursive_traverse head, TimelineState.new
         }
         final_state = timeline_states.inject{|t,s|
-          t.timeline = t.timeline + s.timeline
+          t.timelines = t.timelines + s.timelines
           t
         }
         final_state
@@ -30,7 +30,7 @@ module Brilliant
 
       def recursive_traverse(node, current_state)
         puts "visiting #{node.name}"
-        current_state.timeline.first << node.name
+        current_state.timelines.first << node.name
         if node.downstream.empty?
 
           puts "#{node.name} has no downstream nodes"
@@ -40,7 +40,7 @@ module Brilliant
         else
 
           forks = node.downstream.collect { |down|
-            recursive_traverse(down, TimelineState.new).timeline.first
+            recursive_traverse(down, TimelineState.new).timelines.first
           }
           common_elems = forks.inject { |sum, nex| sum & nex }
           #binding.pry
@@ -51,10 +51,10 @@ module Brilliant
             current_state.state = "No merge is possible"
 
             timelines = forks.collect { |f|
-              (current_state.timeline + f).flatten
+              (current_state.timelines + f).flatten
             }
 
-            current_state.timeline = timelines
+            current_state.timelines = timelines
 
 
           elsif base_forks.empty?
@@ -73,17 +73,17 @@ module Brilliant
             versions = []
             #could iterate over permuations of parallel events here to list all possible timelines, but outside of problem description
             dispute.each { |p|
-              versions << (current_state.timeline + p + agreed).flatten
+              versions << (current_state.timelines + p + agreed).flatten
             }
 
-            current_state.timeline = versions
+            current_state.timelines = versions
 
 
           elsif base_forks.size == 1
             current_state.state = "Merge is possible"
             puts "full merge possilbe"
 
-            current_state.timeline = [(current_state.timeline + forks.sort_by(&:size).last).flatten]
+            current_state.timelines = [(current_state.timelines + forks.sort_by(&:size).last).flatten]
           else
             raise " only one base fork should be found!"
           end

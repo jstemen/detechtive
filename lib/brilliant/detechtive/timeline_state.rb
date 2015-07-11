@@ -2,10 +2,10 @@ module Brilliant
   module Detechtive
     class TimelineState
 
-      attr_accessor :state, :timeline
+      attr_accessor :state, :timelines
 
       def initialize
-        @timeline = [[] ]
+        @timelines = [[]]
       end
     end
   end
