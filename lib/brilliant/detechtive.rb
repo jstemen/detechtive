@@ -1,7 +1,7 @@
 require "brilliant/detechtive/version"
 require_relative "../brilliant/detechtive/graph"
 require_relative "../brilliant/detechtive/node"
-require_relative "../brilliant/detechtive/result"
+require_relative "../brilliant/detechtive/timeline_state"
 
 module Brilliant
   module Detechtive

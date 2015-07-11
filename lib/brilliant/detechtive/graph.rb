@@ -18,38 +18,55 @@ module Brilliant
 
         head = heads.first
 
-        arr = recursive_traverse head, []
-        Result.new("Merge is possible", [arr])
+        recursive_traverse head, TimelineState.new
       end
 
-      def recursive_traverse(node, visited)
+      def recursive_traverse(node, current_state)
         puts "visiting #{node.name}"
-        visited << node.name
+        current_state.timeline << node.name
         if node.downstream.empty?
 
           puts "#{node.name} has no downstream nodes"
-          return visited
+          return current_state
         elsif node.downstream.size == 1
-          return recursive_traverse node.downstream.first, visited
+          return recursive_traverse node.downstream.first, current_state
         else
 
           forks = node.downstream.collect { |down|
-            recursive_traverse(down, [])
+            recursive_traverse(down, TimelineState.new).timeline
           }
           common_elems = forks.inject { |sum, nex| sum & nex }
-          raise "found #{common_elems.size} common elements" unless common_elems.size == 1
-          common_elem = common_elems.first
-          base_forks = forks.select { |f| f.first.equal? common_elem}
           #binding.pry
+
+          common_elem = common_elems.first
+          base_forks = forks.select { |f| f.first.equal? common_elem }
           if base_forks.empty?
-            #partial merge
+            current_state.state = "Partial merge is possible"
+            #partial merge or no merge
+            jumbled = []
+
+            com_index = forks.first.find_index common_elem
+            agreed = forks.first.slice(com_index, forks.first.size - 1)
+
+            dispute = forks.collect { |f|
+              term = f.find_index common_elem
+              f.slice(0, term)
+            }
+
+            versions = []
+            #could iterate over permuations of parallel events here to list all possible timelines, but outside of problem description
+            dispute.each{ |p|
+              versions << (current_state.timeline + p + agreed).flatten
+            }
+
+            current_state.timeline = versions
+
+
           elsif base_forks.size == 1
-            #full merge
+            current_state.state = "Merge is possible"
             puts "full merge possilbe"
 
-            forks.sort_by(&:size).last.each { |node|
-              visited << node
-            }
+            current_state.timeline = [(current_state.timeline + forks.sort_by(&:size).last).flatten]
           else
             raise " only one base fork should be found!"
           end
@@ -69,7 +86,7 @@ module Brilliant
 =end
 
         end
-        visited
+        current_state
       end
 
 
