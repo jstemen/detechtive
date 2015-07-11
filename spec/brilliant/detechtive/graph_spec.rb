@@ -27,7 +27,7 @@ module Brilliant
           ]
 
           res = @graph.input(input)
-          expect(res.state).to eq("Merge is possible")
+          expect(res.state).to eq('Merge is possible')
           expect(res.timelines).to eq(
                                        [
                                            ["fight", "gunshot", "falling",

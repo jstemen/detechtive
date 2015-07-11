@@ -1,6 +1,6 @@
 module Brilliant
   module Detechtive
-    #Bi-directionally linked node
+    # Bi-directionally linked node
     class Node
       attr_reader :upstream, :downstream, :name
 

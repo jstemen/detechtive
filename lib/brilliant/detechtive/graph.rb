@@ -83,7 +83,7 @@ module Brilliant
 
           elsif base_forks.size == 1
             current_state.state = 'Merge is possible'
-            Log.debug 'Full merge possilbe'
+            Log.debug 'Full merge possible'
 
             longest_merge_array = timeline_forks.sort_by(&:size).last
             current_state.timelines = [(current_state.timelines + longest_merge_array).flatten]
