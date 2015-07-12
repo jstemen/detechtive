@@ -33,7 +33,6 @@ module Brilliant
                                            ["fight", "gunshot", "falling",
                                             "fleeing"]
                                        ]
-
                                    )
 
         end
