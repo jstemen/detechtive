@@ -1,31 +1,8 @@
 # Brilliant::Detechtive
 
-TODO: Write a gem description
-
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'brilliant-detechtive'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install brilliant-detechtive
-
 ## Usage
+1) run "bundle" in this brillian-detechtive directory
+2) run "./bin/detechtive_solver sample.json" from brillian-detechtive directory to see output.  sample.json can be replaced with other json files.
 
-TODO: Write usage instructions here
-
-## Contributing
-
-1. Fork it ( https://github.com/[my-github-username]/brilliant-detechtive/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+## Testing
+To active automatically run tests durnig development run "bundle exec guard" in brillian-detechtive directory
