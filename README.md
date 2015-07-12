@@ -8,4 +8,4 @@ This code is a solution to the problem defined in the "Take_Home_--_Crime_Timeli
 2) run "./bin/detechtive_solver sample.json" from brillian-detechtive directory to see output.  sample.json can be replaced with other json files.
 
 ## Testing
-To active automatically run tests durnig development run "bundle exec guard" in brillian-detechtive directory
+To active automatically run tests durnig development run "bundle exec guard" in brillian-detechtive directory.  Alternatively, running "rspec" will also kick off the automated tests.
