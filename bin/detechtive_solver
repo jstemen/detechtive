@@ -2,4 +2,6 @@
 
 require_relative '../lib/brilliant/detechtive'
 
+ARGV.unshift('process') unless ARGV.first == 'process' or ARGV.first == 'help'
+
 Brilliant::Detechtive::Cli.start(ARGV)
