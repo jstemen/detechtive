@@ -20,6 +20,7 @@ module Brilliant
         timeline_states = heads.collect { |head|
           recursive_traverse head, TimelineState.new
         }
+        # This won't capture multiple merge types, the state message will be overwritten
         final_state = timeline_states.inject { |t, s|
           t.timelines = t.timelines + s.timelines
           t
